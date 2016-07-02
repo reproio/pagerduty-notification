@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode
 // See http://rundeck.org/docs/developer/notification-plugin-development.html
 
 // curl -H "Content-type: application/json" -X POST \
-//    -d '{    
+//    -d '{
 //      "service_key": "ee59049e89dd45f28ce35467a08577cb",
 //      "event_type": "trigger",
 //      "description": "FAILURE for production/HTTP on machine srv01.acme.com",
@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.JsonNode
 class DEFAULTS {
     static String PAGERDUTY_URL = "https://events.pagerduty.com/generic/2010-04-15/create_event.json"
     static String SUBJECT_LINE='${job.status} [${job.project}] \"${job.name}\" run by ${job.user} (#${job.execid})'
+    static String SERVICE_KEY=''
 }
 
 /**
@@ -95,8 +96,7 @@ rundeckPlugin(NotificationPlugin){
     description="Create a Trigger event."
     configuration{
         subject title:"Subject", description:"Incident subject line. Can contain \${job.status}, \${job.project}, \${job.name}, \${job.group}, \${job.user}, \${job.execid}", defaultValue:DEFAULTS.SUBJECT_LINE,required:true
-
-        service_key title:"Service API Key", description:"The service key", scope:"Project"
+        service_key title:"Service API Key", description:"The service key", defaultValue:DEFAULTS.SERVICE_KEY, required:true
     }
     onstart { Map executionData,Map configuration ->
         triggerEvent(executionData, configuration)
@@ -107,7 +107,7 @@ rundeckPlugin(NotificationPlugin){
         // return success.
         true
     }
-    onsuccess {
+    onsuccess { Map executionData, Map configuration ->
         triggerEvent(executionData, configuration)
         true
     }
