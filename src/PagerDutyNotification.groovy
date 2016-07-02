@@ -58,12 +58,14 @@ def triggerEvent(Map executionData, Map configuration) {
             event_type: 'trigger',
             service_key: configuration.service_key,
             description: expandedSubject,
-            details:[job: executionData.job.name,
-                    group: executionData.job.group,
-                    description: executionData.job.description,
-                    project: executionData.job.project,
-                    user: executionData.user,
-                    status: executionData.status,
+            client_url: executionData.job.href,
+            details:[
+              job: executionData.job.name,
+              group: executionData.job.group,
+              description: executionData.job.description,
+              project: executionData.job.project,
+              user: executionData.user,
+              status: executionData.status,
             ]
     ]
 
